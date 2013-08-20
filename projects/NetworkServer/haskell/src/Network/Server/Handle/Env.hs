@@ -17,18 +17,24 @@ data Env a =
 acceptL ::
   Lens (Env a) Accept
 acceptL =
-  error "todo"
+  Lens
+    (\(Env _ s a) x -> Env x s a)
+    (\(Env x _ _) -> x)
 
 clientsL ::
   Lens (Env a) (IORef (Set Ref))
 clientsL =
-  error "todo"
+  Lens
+    (\(Env x _ a) s -> Env x s a)
+    (\(Env _ s _) -> s)
 
 envvalL ::
   Lens (Env a) a
 envvalL =
-  error "todo"
+  Lens
+    (\(Env x s _) a -> Env x s a)
+    (\(Env _ _ a) -> a)
 
 instance HandleLens (Env a) where
   handleL =
-    error "todo"
+    acceptL .@ handleL
