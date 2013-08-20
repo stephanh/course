@@ -2,7 +2,7 @@ module Network.Server.Handle.Loop where
 
 import Network(PortID(..), sClose, withSocketsDo, listenOn)
 import System.IO(BufferMode(..))
-import Data.IORef(IORef, readIORef, newIORef, atomicModifyIORef)
+import Data.IORef(IORef, newIORef, readIORef, atomicModifyIORef)
 import Control.Concurrent(forkIO)
 import Control.Exception(finally, try, IOException, Exception)
 import Control.Monad(forever)
@@ -16,6 +16,9 @@ import qualified Data.Set as S
 
 data Loop v f a =
   Loop (Env v -> f a)
+
+type IOLoop v a =
+  Loop v IO a
 
 instance Functor f => Functor (Loop v f) where
   fmap f (Loop k) =
@@ -39,7 +42,7 @@ instance MonadIO f => MonadIO (Loop v f) where
 
 xprint ::
   IOException
-  -> Loop v IO ()
+  -> IOLoop v ()
 xprint =
   liftIO . print
 
@@ -51,33 +54,58 @@ etry k =
   Loop $ try . k
 
 server ::
-  Loop v IO ()
-  -> v
+  IO w -- server initialise
+  -> (w -> IO v) -- client accepted (pre)
+  -> IOLoop v () -- per-client
   -> IO a
-server (Loop f) i =
+server i r (Loop f) =
   let hand s w c = forever $
                      do q <- accept' s
                         lSetBuffering q NoBuffering
                         _ <- atomicModifyIORef_ c (S.insert (refL `getL` q))
-                        x <- readIORef w
+                        x <- r w
                         forkIO (f (Env q c x))
   in withSocketsDo $ do
        s <- listenOn (PortNumber 6060)
-       w <- newIORef i
+       w <- i
        c <- newIORef S.empty
        hand s w c `finally` sClose s
 
-client ::
-  Loop v IO x
-  -> (String -> Loop v IO a)
-  -> Loop v IO ()
-client q f =
-  let loop = do k <- etry lGetLine
-                case k of Left e -> xprint e
-                          Right [] -> loop
-                          Right l -> f l >> loop
+perClient ::
+  IOLoop v x -- client accepted (post)
+  -> (String -> IOLoop v a) -- read line from client
+  -> IOLoop v ()
+perClient q f =
+  let lp = do k <- etry lGetLine
+              case k of Left e -> xprint e
+                        Right [] -> lp
+                        Right l -> f l >> lp
   in do _ <- q
-        loop
+        lp
+
+loop ::
+  IO w -- server initialise
+  -> (w -> IO v) -- client accepted (pre)
+  -> IOLoop v x -- client accepted (post)
+  -> (String -> IOLoop v w) -- read line from client
+  -> IO a
+loop i r q f =
+  server i r (perClient q f)
+
+iorefServer ::
+  v -- server initialise
+  -> IOLoop v () -- per-client
+  -> IO a
+iorefServer x =
+  server (newIORef x) readIORef
+
+iorefLoop ::
+  v -- server initialise
+  -> IOLoop v x -- client accepted (post)
+  -> (String -> IOLoop v w) -- read line from client
+  -> IO a
+iorefLoop x q f =
+  iorefServer x (perClient q f)
 
 atomicModifyIORef_ ::
   IORef a
