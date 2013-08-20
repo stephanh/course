@@ -118,9 +118,9 @@ iorefLoop x q f =
 atomicModifyIORef_ ::
   IORef a
   -> (a -> a)
-  -> IO ()
+  -> IO a
 atomicModifyIORef_ r f =
-  atomicModifyIORef r (\a -> (f a, ()))
+  atomicModifyIORef r (\a -> (f a, a))
 
 pPutStrLn ::
   String
@@ -185,7 +185,7 @@ ecatch (Loop k) f =
 
 modifyClients ::
   (Set Ref -> Set Ref)
-  -> IOLoop v ()
+  -> IOLoop v (Set Ref)
 modifyClients f =
   Loop $ \env ->
     atomicModifyIORef_ (clientsL `getL` env) f

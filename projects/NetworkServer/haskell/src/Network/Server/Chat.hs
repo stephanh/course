@@ -1,6 +1,6 @@
 module Network.Server.Chat
 (
-  module Network.Server.Chat.Chat
+  module Network.Server.Chat.ChatLoop
 ) where
 
-import Network.Server.Chat.Chat
+import Network.Server.Chat.ChatLoop
