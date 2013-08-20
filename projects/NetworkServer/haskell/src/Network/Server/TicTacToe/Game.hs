@@ -1,8 +1,8 @@
-module Network.TicTacToe.Game where
+module Network.Server.TicTacToe.Game where
 
 import Prelude hiding (elem, mapM_, concat, catch)
 
-import Network.TicTacToe.Lens
+import Network.Server.Handle.Lens
 import Data.TicTacToe
 
 import Data.IORef(IORef, atomicModifyIORef)
@@ -11,8 +11,8 @@ import Control.Monad.Trans(MonadTrans(..), MonadIO(..))
 import Control.Applicative(Applicative(..))
 import Control.Exception(IOException)
 
-import Network.TicTacToe.Command
-import Network.TicTacToe.Env(FinishedGames, Env(..), boardL, finishedGamesL)
+import Network.Server.TicTacToe.Command
+import Network.Server.TicTacToe.Env(FinishedGames, Env(..), boardL, finishedGamesL)
 
 newtype Game f a =
   Game (Env -> f (a, Unfinished, FinishedGames))

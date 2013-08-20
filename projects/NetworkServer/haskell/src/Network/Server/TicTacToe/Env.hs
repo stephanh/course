@@ -1,10 +1,10 @@
-module Network.TicTacToe.Env where
+module Network.Server.TicTacToe.Env where
 
 import Data.TicTacToe
-import Network.TicTacToe.Lens
-import Network.TicTacToe.HandleLens(HandleLens(..))
-import Network.TicTacToe.Accept(Accept)
-import Network.TicTacToe.Ref(Ref)
+import Network.Server.Handle.Lens
+import Network.Server.Handle.HandleLens(HandleLens(..))
+import Network.Server.Handle.Accept(Accept)
+import Network.Server.Handle.Ref(Ref)
 import Data.IORef(IORef)
 import Data.Set(Set)
 

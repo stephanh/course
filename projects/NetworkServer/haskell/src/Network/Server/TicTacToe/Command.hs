@@ -1,4 +1,4 @@
-module Network.TicTacToe.Command where
+module Network.Server.TicTacToe.Command where
 
 import Prelude hiding (elem)
 import Data.TicTacToe
