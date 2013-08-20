@@ -12,45 +12,45 @@ import Control.Applicative(Applicative(..))
 import Control.Exception(IOException)
 
 import Network.Server.TicTacToe.Command
-import Network.Server.TicTacToe.Env(FinishedGames, Env(..), boardL, finishedGamesL)
+import Network.Server.TicTacToe.GameEnv(FinishedGames, GameEnv(..), finishedGamesL)
 
 newtype Game f a =
-  Game (Env -> f (a, Unfinished, FinishedGames))
-
+  Game (GameEnv -> f (a, Unfinished, FinishedGames))
+        {-
 fGame ::
   Functor f =>
-  (Env -> f (a, Unfinished))
+  (GameEnv -> f (a, Unfinished))
   -> Game f a
 fGame f =
   Game (\env -> fmap (\(a, b) -> (a, b, finishedGamesL `getL` env)) . f $ env)
 
 fGame' ::
   Monad f =>
-  (Env -> f (a, Unfinished))
+  (GameEnv -> f (a, Unfinished))
   -> Game f a
 fGame' f =
   Game (\env -> liftM (\(a, b) -> (a, b, finishedGamesL `getL` env)) . f $ env)
 
 rGame ::
   Functor f =>
-  (Env -> f a)
+  (GameEnv -> f a)
   -> Game f a
 rGame f =
   fGame (\env -> fmap (\a -> (a, boardL `getL` env)) (f env))
 
 rGame' ::
   Monad f =>
-  (Env -> f a)
+  (GameEnv -> f a)
   -> Game f a
 rGame' f =
   fGame' (\env -> liftM (\a -> (a, boardL `getL` env)) . f $ env)
 
 idGame ::
   Applicative f =>
-  Game f Env
+  Game f GameEnv
 idGame =
   rGame pure
-
+                      -}
 instance Functor f => Functor (Game f) where
   fmap =
     error "todo"

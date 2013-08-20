@@ -1,4 +1,4 @@
-module Network.Server.TicTacToe.Env where
+module Network.Server.TicTacToe.GameEnv where
 
 import Data.TicTacToe
 import Network.Server.Handle.Lens
@@ -11,8 +11,8 @@ import Data.Set(Set)
 type FinishedGames =
   [FinishedBoard]
 
-data Env =
-  Env
+data GameEnv =
+  GameEnv
     Accept
     Unfinished
     (IORef Unfinished)
@@ -20,31 +20,21 @@ data Env =
     FinishedGames
   deriving Eq
 
-acceptL ::
-  Lens Env Accept
-acceptL =
-  error "todo"
-
-boardL ::
-  Lens Env Unfinished
-boardL =
-  error "todo"
-
 boardrefL ::
-  Lens Env (IORef Unfinished)
+  Lens GameEnv (IORef Unfinished)
 boardrefL =
   error "todo"
 
 clientsL ::
-  Lens Env (IORef (Set Ref))
+  Lens GameEnv (IORef (Set Ref))
 clientsL =
   error "todo"
 
 finishedGamesL ::
-  Lens Env FinishedGames
+  Lens GameEnv FinishedGames
 finishedGamesL =
   error "todo"
 
-instance HandleLens Env where
+instance HandleLens GameEnv where
   handleL =
     error "todo"
