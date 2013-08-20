@@ -21,7 +21,7 @@ incr ::
   ChatLoop ()
 incr =
   do e <- readEnvval
-     liftIO $ atomicModifyIORef_ e undefined
+     liftIO $ atomicModifyIORef_ e (+1)
 
 chatLoop ::
   ChatLoop x -- client accepted (post)
