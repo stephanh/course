@@ -1,10 +1,12 @@
 module Network.Server.Handle.Loop where
 
+import Prelude hiding (catch, mapM_)
 import Network(PortID(..), sClose, withSocketsDo, listenOn)
 import System.IO(BufferMode(..))
 import Data.IORef(IORef, newIORef, readIORef, atomicModifyIORef)
+import Data.Foldable(Foldable, mapM_)
 import Control.Concurrent(forkIO)
-import Control.Exception(finally, try, IOException, Exception)
+import Control.Exception(finally, try, catch, IOException, Exception)
 import Control.Monad(forever)
 import Control.Monad.Trans(MonadTrans(..), MonadIO(..))
 
@@ -12,6 +14,8 @@ import Network.Server.Handle.Accept
 import Network.Server.Handle.HandleLens
 import Network.Server.Handle.Lens
 import Network.Server.Handle.Env
+import Network.Server.Handle.Ref
+import Data.Set(Set)
 import qualified Data.Set as S
 
 data Loop v f a =
@@ -113,3 +117,50 @@ atomicModifyIORef_ ::
   -> IO ()
 atomicModifyIORef_ r f =
   atomicModifyIORef r (\a -> (f a, ()))
+
+pPutStrLn ::
+  String
+  -> IOLoop v ()
+pPutStrLn s =
+  Loop (\env -> lPutStrLn env s)
+
+             {-
+(!) ::
+  Foldable t =>
+  IOLoop v (t Ref)
+  -> String
+  -> IOLoop v () -}
+clients ! msg =
+ clients >>= purgeClients (\y -> liftIO (lPutStrLn y msg))
+
+infixl 2 !
+
+purgeClients ::
+  Foldable t =>
+  (Ref -> IOLoop v ())
+  -> t Ref
+  -> IOLoop v ()
+purgeClients a =
+  mapM_ (\y ->
+    ecatch (a y)
+      (\x -> do _ <- modifyClients (S.delete y)
+                xprint x)
+        )
+
+-- Control.Monad.CatchIO
+
+ecatch ::
+  Exception e =>
+  IOLoop v a
+  -> (e -> IOLoop v a)
+  -> IOLoop v a
+ecatch (Loop k) f =
+  Loop $ \env -> k env `catch` (\e -> let Loop l = f e in l env)
+
+modifyClients ::
+  (Set Ref -> Set Ref)
+  -> IOLoop v ()
+modifyClients f =
+  Loop $ \env ->
+    atomicModifyIORef_ (clientsL `getL` env) f
+

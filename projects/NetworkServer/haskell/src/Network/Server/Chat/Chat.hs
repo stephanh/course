@@ -18,6 +18,9 @@ chatLoop =
   iorefLoop 0
 
 
+wibble =
+  chatLoop (pPutStrLn "hi") pPutStrLn
+
 
 {-
 
