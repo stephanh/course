@@ -24,12 +24,12 @@ boardrefL ::
   Lens GameEnv (IORef Unfinished)
 boardrefL =
   error "todo"
-
+    {-
 clientsL ::
   Lens GameEnv (IORef (Set Ref))
 clientsL =
   error "todo"
-
+      -}
 finishedGamesL ::
   Lens GameEnv FinishedGames
 finishedGamesL =

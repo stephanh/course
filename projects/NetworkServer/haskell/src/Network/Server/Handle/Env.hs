@@ -14,14 +14,14 @@ data Env a =
     a
   deriving Eq
 
-acceptL' ::
+acceptL ::
   Lens (Env a) Accept
-acceptL' =
+acceptL =
   error "todo"
 
-clientsL' ::
+clientsL ::
   Lens (Env a) (IORef (Set Ref))
-clientsL' =
+clientsL =
   error "todo"
 
 envvalL ::
