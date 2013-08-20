@@ -38,3 +38,7 @@ envvalL =
 instance HandleLens (Env a) where
   handleL =
     acceptL .@ handleL
+
+instance Functor Env where
+  fmap f (Env x s a) =
+    Env x s (f a)
