@@ -1,14 +1,27 @@
 module Network.Server.Chat.Chat where
 
-import Network.Server.Handle.Env
 import Network.Server.Handle.Loop
-import Data.IORef(IORef, newIORef, readIORef)
-
-type ChatEnv =
-  Env (IORef Integer)
+import Data.Char(isSpace, toLower)
+import Data.Maybe(fromMaybe)
+import Data.Foldable(msum)
+import Control.Applicative((<$), (<$>))
+import Data.Function(on)
+import Control.Monad.Trans(MonadIO(..))
 
 type ChatLoop a =
-  IOLoop Integer a
+  IORefLoop Integer a
+
+data ChatCommand =
+  Chat String
+  | Incr
+  | Unknown String
+  deriving (Eq, Show)
+
+incr ::
+  ChatLoop ()
+incr =
+  do e <- readEnvval
+     liftIO $ atomicModifyIORef_ e undefined
 
 chatLoop ::
   ChatLoop x -- client accepted (post)
@@ -17,47 +30,80 @@ chatLoop ::
 chatLoop =
   iorefLoop 0
 
+chatCommand ::
+  String
+  -> ChatCommand
+chatCommand z =
+  Unknown z `fromMaybe` msum [
+                               Chat <$> trimPrefixThen "CHAT" z
+                             , Incr <$ trimPrefixThen "INCR" z
+                             ]
+
+process ::
+  ChatCommand
+  -> ChatLoop ()
+process (Chat m) =
+  allClientsButThis ! "CHAT " ++ m
+process Incr =
+  do incr
+     undefined
+process (Unknown s) =
+  pPutStrLn ("UNKNOWN " ++ s)
 
 wibble =
-  chatLoop (pPutStrLn "hi") pPutStrLn
+  chatLoop (readIOEnvval >>= pPutStrLn . show) (process . chatCommand)
 
+-- |
+--
+-- >>> trimPrefixThen "ABC" "AB"
+-- Nothing
+--
+-- >>> trimPrefixThen "ABC" "ABC"
+-- Just ""
+--
+-- >>> trimPrefixThen "ABC" "ABCDEF"
+-- Just "DEF"
+--
+-- >>> trimPrefixThen "ABC" "Ab"
+-- Nothing
+--
+-- >>> trimPrefixThen "ABC" "Abc"
+-- Just ""
+--
+-- >>> trimPrefixThen "ABC" "Abcdef"
+-- Just "def"
+--
+-- >>> trimPrefixThen "ABC" "Abcdef   ghi  "
+-- Just "def   ghi"
+trimPrefixThen ::
+  String
+  -> String
+  -> Maybe String
+trimPrefixThen l z =
+  reverse . dropWhile isSpace . reverse . dropWhile isSpace <$> prefixThen ((==) `on` toLower) l z
 
-{-
-
-server ::
-  v
-  -> Loop v IO ()
-  -> IO a
-server i (Loop f) =
-  let hand s w c = forever $
-                     do q <- accept' s
-                        lSetBuffering q NoBuffering
-                        _ <- atomicModifyIORef_ c (S.insert (refL `getL` q))
-                        x <- readIORef w
-                        forkIO (f (Env q c x))
-  in withSocketsDo $ do
-       s <- listenOn (PortNumber 6060)
-       w <- newIORef i
-       c <- newIORef S.empty
-       hand s w c `finally` sClose s
-
-perClient ::
-  Loop v IO x
-  -> (String -> Loop v IO a)
-  -> Loop v IO ()
-perClient q f =
-  let lp = do k <- etry lGetLine
-              case k of Left e -> xprint e
-                        Right [] -> lp
-                        Right l -> f l >> lp
-  in do _ <- q
-        lp
-
-loop ::
-  v
-  -> Loop v IO x
-  -> (String -> Loop v IO w)
-  -> IO a
-loop i q f =
-  server i (perClient q f)
- -}
+-- |
+--
+-- >>> prefixThen (==) "ABC" "AB"
+-- Nothing
+--
+-- >>> prefixThen (==) "ABC" "ABC"
+-- Just ""
+--
+-- >>> prefixThen (==) "ABC" "ABCDEF"
+-- Just "DEF"
+prefixThen ::
+  (a -> a -> Bool)
+  -> [a]
+  -> [a]
+  -> Maybe [a]
+prefixThen _ [] r =
+  Just r
+prefixThen _ _ [] =
+  Nothing
+prefixThen e (a:b) (c:d) =
+  if e a c
+    then
+      prefixThen e b d
+    else
+      Nothing
