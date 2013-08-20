@@ -57,7 +57,7 @@ xprint =
 etry ::
   Exception e =>
   (Env v -> IO a)
-  -> Loop v IO (Either e a)
+  -> IOLoop v (Either e a)
 etry k =
   Loop $ try . k
 
