@@ -1,7 +1,6 @@
 module Network.Server.TicTacToe.Loop where
 
 import Prelude hiding (mapM_, catch)
-import Network.Server.Common.Env
 import System.IO(BufferMode(..))
 import Network(PortID(..), sClose, withSocketsDo, listenOn)
 import Data.IORef(IORef, newIORef, readIORef)
@@ -191,7 +190,7 @@ ecatch ::
   -> (e -> IOLoop v s a)
   -> IOLoop v s a
 ecatch (Loop k) f =
-  Loop $ \env s -> k env s `catch` (\e -> let Loop l = f e; o = l env s in l env s)
+  Loop $ \env s -> k env s `catch` (\e -> let Loop l = f e in l env s)
 
 modifyClients ::
   (Set Ref -> Set Ref)
