@@ -2,9 +2,9 @@ name:               network-server
 version:            0.0.1
 license:            BSD3
 license-File:       etc/LICENCE
-author:             todo
-maintainer:         todo
-copyright:          todo
+author:             Tony Morris <ʇǝu˙sıɹɹoɯʇ@ןןǝʞsɐɥ>
+maintainer:         Tony Morris
+copyright:          Copyright (C) 2013 National ICT Australia Limited 2013
 synopsis:           A network server
 category:           Education
 description:        A network server
@@ -52,10 +52,15 @@ library
 
   exposed-modules:
                     Network.Server
+                    , Network.Server.Chat
+                    , Network.Server.ChatLoop
+                    , Network.Server.Loop
                     , Network.Server.Handle
                     , Network.Server.Handle.Accept
+                    , Network.Server.Handle.Env
                     , Network.Server.Handle.HandleLens
                     , Network.Server.Handle.Lens
+                    , Network.Server.Handle.Line
                     , Network.Server.Handle.Ref
                     , Network.Server.TicTacToe
                     , Network.Server.TicTacToe.Command

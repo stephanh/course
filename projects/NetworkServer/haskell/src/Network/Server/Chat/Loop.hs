@@ -1,4 +1,4 @@
-module Network.Server.Handle.Loop where
+module Network.Server.Chat.Loop where
 
 import Prelude hiding (catch, mapM_)
 import Network(PortID(..), sClose, withSocketsDo, listenOn)
