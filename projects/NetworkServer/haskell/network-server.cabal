@@ -52,7 +52,6 @@ library
 
   exposed-modules:
                     Network.Server
-                    , Network.Server.Chat
                     , Network.Server.ChatLoop
                     , Network.Server.Loop
                     , Network.Server.Handle
