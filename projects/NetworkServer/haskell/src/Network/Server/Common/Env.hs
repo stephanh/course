@@ -4,7 +4,7 @@ import Network.Server.Common.Accept
 import Network.Server.Common.Ref
 import Network.Server.Common.HandleLens
 import Network.Server.Common.Lens
-import Data.IORef(IORef)
+import Data.IORef(IORef, atomicModifyIORef)
 import Data.Set(Set)
 
 data Env a =
@@ -42,3 +42,10 @@ instance HandleLens (Env a) where
 instance Functor Env where
   fmap f (Env x s a) =
     Env x s (f a)
+
+atomicModifyIORef_ ::
+  IORef a
+  -> (a -> a)
+  -> IO a
+atomicModifyIORef_ r f =
+  atomicModifyIORef r (\a -> (f a, a))

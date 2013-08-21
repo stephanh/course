@@ -1,5 +1,6 @@
 module Network.Server.Chat.Chat where
 
+import Network.Server.Common.Env
 import Network.Server.Common.Line
 import Network.Server.Chat.Loop
 import Data.Maybe(fromMaybe)

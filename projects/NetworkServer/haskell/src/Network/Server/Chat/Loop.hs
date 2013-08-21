@@ -1,9 +1,9 @@
 module Network.Server.Chat.Loop where
 
-import Prelude hiding (catch, mapM_)
+import Prelude hiding (mapM_)
 import Network(PortID(..), sClose, withSocketsDo, listenOn)
 import System.IO(BufferMode(..))
-import Data.IORef(IORef, newIORef, readIORef, atomicModifyIORef)
+import Data.IORef(IORef, newIORef, readIORef)
 import Data.Foldable(Foldable, mapM_)
 import Control.Applicative(Applicative, pure)
 import Control.Concurrent(forkIO)
@@ -109,13 +109,6 @@ iorefLoop ::
   -> IO a
 iorefLoop x q f =
   iorefServer x (perClient q f)
-
-atomicModifyIORef_ ::
-  IORef a
-  -> (a -> a)
-  -> IO a
-atomicModifyIORef_ r f =
-  atomicModifyIORef r (\a -> (f a, a))
 
 pPutStrLn ::
   String
