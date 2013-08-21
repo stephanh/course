@@ -199,4 +199,3 @@ modifyClients ::
 modifyClients f =
   initLoop $ \env ->
     atomicModifyIORef_ (clientsL `getL` env) f
-
