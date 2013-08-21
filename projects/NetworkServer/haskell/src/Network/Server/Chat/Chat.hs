@@ -1,6 +1,6 @@
 module Network.Server.Chat.Chat where
 
-import Network.Server.Handle.Line
+import Network.Server.Common.Line
 import Network.Server.Chat.Loop
 import Data.Maybe(fromMaybe)
 import Data.Foldable(msum)

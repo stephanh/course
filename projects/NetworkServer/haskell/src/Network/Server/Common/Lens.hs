@@ -1,4 +1,4 @@
-module Network.Server.Handle.Lens where
+module Network.Server.Common.Lens where
 
 -- | A lens is a pair of set and get.
 --

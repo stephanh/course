@@ -1,7 +1,7 @@
 module Network.Server.Chat.Main where
 
 import Network.Server.Chat.Chat
-import Network.Server.Handle.Loop
+import Network.Server.Chat.Loop
 
 main ::
   IO a

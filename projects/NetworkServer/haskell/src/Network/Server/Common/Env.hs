@@ -1,9 +1,9 @@
-module Network.Server.Handle.Env where
+module Network.Server.Common.Env where
 
-import Network.Server.Handle.Accept
-import Network.Server.Handle.Ref
-import Network.Server.Handle.HandleLens
-import Network.Server.Handle.Lens
+import Network.Server.Common.Accept
+import Network.Server.Common.Ref
+import Network.Server.Common.HandleLens
+import Network.Server.Common.Lens
 import Data.IORef(IORef)
 import Data.Set(Set)
 

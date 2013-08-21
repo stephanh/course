@@ -1,8 +1,8 @@
-module Network.Server.Handle.Accept where
+module Network.Server.Common.Accept where
 
-import Network.Server.Handle.Lens
-import Network.Server.Handle.HandleLens(HandleLens(..))
-import Network.Server.Handle.Ref(Ref(..))
+import Network.Server.Common.Lens
+import Network.Server.Common.HandleLens(HandleLens(..))
+import Network.Server.Common.Ref(Ref(..))
 import Network(HostName, Socket, PortNumber, accept)
 
 data Accept =

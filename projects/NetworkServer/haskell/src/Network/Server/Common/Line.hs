@@ -1,4 +1,4 @@
-module Network.Server.Handle.Line where
+module Network.Server.Common.Line where
 
 import Data.Char(isSpace, toLower)
 import Data.Function(on)

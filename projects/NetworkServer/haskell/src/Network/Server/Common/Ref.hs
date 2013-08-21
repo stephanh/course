@@ -1,7 +1,7 @@
-module Network.Server.Handle.Ref where
+module Network.Server.Common.Ref where
 
-import Network.Server.Handle.HandleLens(HandleLens(..))
-import Network.Server.Handle.Lens(iso)
+import Network.Server.Common.HandleLens(HandleLens(..))
+import Network.Server.Common.Lens(iso)
 import System.IO(Handle)
 import Data.Function(on)
 

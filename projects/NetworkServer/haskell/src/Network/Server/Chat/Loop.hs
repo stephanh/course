@@ -11,11 +11,11 @@ import Control.Exception(finally, try, catch, IOException, Exception)
 import Control.Monad(forever)
 import Control.Monad.Trans(MonadTrans(..), MonadIO(..))
 
-import Network.Server.Handle.Accept
-import Network.Server.Handle.HandleLens
-import Network.Server.Handle.Lens
-import Network.Server.Handle.Env
-import Network.Server.Handle.Ref
+import Network.Server.Common.Accept
+import Network.Server.Common.HandleLens
+import Network.Server.Common.Lens
+import Network.Server.Common.Env
+import Network.Server.Common.Ref
 import Data.Set(Set)
 import qualified Data.Set as S
 

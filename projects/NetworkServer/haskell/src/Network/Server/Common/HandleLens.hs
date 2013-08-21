@@ -1,6 +1,6 @@
-module Network.Server.Handle.HandleLens where
+module Network.Server.Common.HandleLens where
 
-import Network.Server.Handle.Lens(Lens, identityL, getL)
+import Network.Server.Common.Lens(Lens, identityL, getL)
 import System.IO(Handle, BufferMode, hGetLine, hPutStrLn, hClose, hSetBuffering)
 
 class HandleLens a where

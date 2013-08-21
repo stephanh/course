@@ -2,7 +2,7 @@ module Network.Server.TicTacToe.Game where
 
 import Prelude hiding (elem, mapM_, concat, catch)
 
-import Network.Server.Handle.Lens
+import Network.Server.Common.Lens
 import Data.TicTacToe
 
 import Data.IORef(IORef, atomicModifyIORef)
