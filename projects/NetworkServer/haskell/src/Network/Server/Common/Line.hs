@@ -2,6 +2,8 @@ module Network.Server.Common.Line where
 
 import Data.Char(isSpace, toLower)
 import Data.Function(on)
+import Control.Monad.Trans(MonadIO(..))
+import Control.Exception(IOException)
 
 -- |
 --
@@ -57,3 +59,10 @@ prefixThen e (a:b) (c:d) =
       prefixThen e b d
     else
       Nothing
+
+xprint ::
+  MonadIO m =>
+  IOException
+  -> m ()
+xprint =
+  liftIO . print

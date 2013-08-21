@@ -7,13 +7,14 @@ import Data.IORef(IORef, newIORef, readIORef, atomicModifyIORef)
 import Data.Foldable(Foldable, mapM_)
 import Control.Applicative(Applicative, pure)
 import Control.Concurrent(forkIO)
-import Control.Exception(finally, try, catch, IOException, Exception)
+import Control.Exception(finally, try, catch, Exception)
 import Control.Monad(forever)
 import Control.Monad.Trans(MonadTrans(..), MonadIO(..))
 
 import Network.Server.Common.Accept
 import Network.Server.Common.HandleLens
 import Network.Server.Common.Lens
+import Network.Server.Common.Line
 import Network.Server.Common.Env
 import Network.Server.Common.Ref
 import Data.Set(Set)
@@ -47,12 +48,6 @@ instance MonadTrans (Loop v) where
 instance MonadIO f => MonadIO (Loop v f) where
   liftIO =
     lift . liftIO
-
-xprint ::
-  IOException
-  -> IOLoop v ()
-xprint =
-  liftIO . print
 
 etry ::
   Exception e =>
